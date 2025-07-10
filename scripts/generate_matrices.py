@@ -32,9 +32,9 @@ class GenerateMatrices :
 
         # Now create A0_1, A1_2, A2_3
 
-        theta_1 = Symbol("theta_1")
-        theta_2 = Symbol("theta_2")
-        theta_3 = Symbol("theta_3")
+        self.theta_1 = Symbol("theta_1")
+        self.theta_2 = Symbol("theta_2")
+        self.theta_3 = Symbol("theta_3")
 
         alpha_planar = 0.0
 
@@ -42,22 +42,23 @@ class GenerateMatrices :
         alpha_2 = alpha_planar
         alpha_3 = alpha_planar
 
-        r_1 = 0.0
-        r_2 = Symbol("r_2")
-        r_3 = Symbol("r_3")
+        self.r_1 = 0.0
+        self.r_2 = Symbol("r_2")
+        self.r_3 = Symbol("r_3")
 
         d_planar = 0.0
         d_1 = d_planar
         d_2 = d_planar
         d_3 = d_planar
 
-        self.A0_1 = DH_Matric_Generic.subs(r_i,r_1).subs(alpha_i,alpha_1).subs(d_i,d_1).subs(theta_i, theta_1)
-        self.A1_2 = DH_Matric_Generic.subs(r_i,r_2).subs(alpha_i,alpha_2).subs(d_i,d_2).subs(theta_i, theta_2)
-        self.A2_3 = DH_Matric_Generic.subs(r_i,r_3).subs(alpha_i,alpha_3).subs(d_i,d_3).subs(theta_i, theta_3)
+        self.A0_1 = DH_Matric_Generic.subs(r_i,self.r_1).subs(alpha_i,alpha_1).subs(d_i,d_1).subs(theta_i, self.theta_1)
+        self.A1_2 = DH_Matric_Generic.subs(r_i,self.r_2).subs(alpha_i,alpha_2).subs(d_i,d_2).subs(theta_i, self.theta_2)
+        self.A2_3 = DH_Matric_Generic.subs(r_i,self.r_3).subs(alpha_i,alpha_3).subs(d_i,d_3).subs(theta_i, self.theta_3)
 
         self.A0_3 = self.A0_1 * self.A1_2 * self.A2_3
 
         self.A0_3_simplified = trigsimp(self.A0_3)
+    
 
     def preview_matrices(self):
         # We save
