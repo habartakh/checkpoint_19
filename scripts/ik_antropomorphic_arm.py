@@ -129,7 +129,7 @@ def calculate_ik(Pee_x, Pee_y, Pee_z, DH_parameters, theta_2_config, theta_3_con
     print("Angles thetas solved ="+str(thetas))
     print("possible_solution = "+str(possible_solution))
 
-   # return thetas, possible_solution
+    return thetas, possible_solution
     
 
 if __name__ == '__main__':
