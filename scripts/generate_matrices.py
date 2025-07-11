@@ -56,8 +56,10 @@ class GenerateMatrices :
         self.A2_3 = DH_Matric_Generic.subs(r_i,self.r_3).subs(alpha_i,alpha_3).subs(d_i,d_3).subs(theta_i, self.theta_3)
 
         self.A0_3 = self.A0_1 * self.A1_2 * self.A2_3
+        self.A0_2 = self.A0_1 * self.A1_2
 
         self.A0_3_simplified = trigsimp(self.A0_3)
+        self.A0_2_simplified = trigsimp(self.A0_2)
     
 
     def preview_matrices(self):
@@ -68,6 +70,7 @@ class GenerateMatrices :
 
         preview(self.A0_3, viewer='file', filename="A0_3.png", dvioptions=['-D','300'])
         preview(self.A0_3_simplified, viewer='file', filename="A0_3_simplified.png", dvioptions=['-D','300'])
+        preview(self.A0_2_simplified, viewer='file', filename="A0_2_simplified.png", dvioptions=['-D','300'])
 
 
 def main():
