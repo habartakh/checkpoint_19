@@ -25,7 +25,7 @@ class ComputeIk():
             assert False, "Asked for Non existent param DH name ="+str(name)
 
 
-    def compute_ik(self, end_effector_pose, theta_3_config = "down"):
+    def compute_ik(self, end_effector_pose, theta_2_config = "down", theta_3_config = "down"):
         # Initialization
         Pee_x = end_effector_pose.Pee_x
         Pee_y = end_effector_pose.Pee_y
@@ -37,7 +37,8 @@ class ComputeIk():
         r2 = self.get_dh_param("r2")
         r3 = self.get_dh_param("r3")
 
-        print("Input Data===== ELBOW config = "+str(theta_3_config))
+        print("Input Data===== ELBOW theta_2_config = "+str(theta_2_config))
+        print("Input Data===== ELBOW theta_3_config = "+str(theta_3_config))
         print("Pee_x = "+str(Pee_x))
         print("Pee_y = "+str(Pee_y))
         print("Pee_z = "+str(Pee_z))
@@ -49,7 +50,10 @@ class ComputeIk():
 
         #########################################################################
         # theta 1 
-        theta_1 = atan2(Pee_y, Pee_x)
+        if theta_2_config == "down" : 
+            theta_1 = atan2(Pee_y, Pee_x)
+        else : 
+            theta_1 = atan2(-Pee_y, -Pee_x)
 
         #########################################################################
         # theta_3
@@ -81,7 +85,7 @@ class ComputeIk():
 
             theta_3 = atan2(numerator_3, denominator_3)
 
-            if (theta_3 <= 3*pi/4 and theta_3 >= -3*pi /4):
+            if (theta_3 <= 3.0*pi/4.0 and theta_3 >= -3.0*pi /4.0):
                 possible_solution = True 
             else :
                 possible_solution = False  
@@ -92,7 +96,13 @@ class ComputeIk():
             k1 = r2 + r3 * c3
             k2 = r3 * numerator_3
 
-            theta_2 = atan2(Pee_z, D) - atan2(k2, k1)
+            if theta_2_config == "down":
+                # Positive
+                numerator_2 =  D
+            else:
+                numerator_2 = -1.0 * D
+
+            theta_2 = atan2(Pee_z, numerator_2) - atan2(k2, k1)
 
 
             if (theta_2 <= 3*pi/4 and theta_2 >= -pi /4):
@@ -106,7 +116,7 @@ class ComputeIk():
         return theta_array, possible_solution
 
 
-def calculate_ik(Pee_x, Pee_y, Pee_z, DH_parameters, elbow_config):
+def calculate_ik(Pee_x, Pee_y, Pee_z, DH_parameters, theta_2_config, theta_3_config):
 
     ik = ComputeIk(DH_parameters = DH_parameters)
     end_effector_pose = EndEffectorWorkingSpace(Pee_x = Pee_x,
@@ -114,11 +124,12 @@ def calculate_ik(Pee_x, Pee_y, Pee_z, DH_parameters, elbow_config):
                                                 Pee_z = Pee_z)
 
 
-    thetas, possible_solution = ik.compute_ik(end_effector_pose=end_effector_pose, theta_3_config= elbow_config)
+    thetas, possible_solution = ik.compute_ik(end_effector_pose=end_effector_pose, 
+                                                theta_2_config=theta_2_config , theta_3_config=theta_3_config)
     print("Angles thetas solved ="+str(thetas))
     print("possible_solution = "+str(possible_solution))
 
-    return thetas, possible_solution
+   # return thetas, possible_solution
     
 
 if __name__ == '__main__':
@@ -135,7 +146,15 @@ if __name__ == '__main__':
     Pee_y = 0.6
     Pee_z = 0.7
 
-    calculate_ik(Pee_x=Pee_x, Pee_y=Pee_y, Pee_z=Pee_z,DH_parameters=DH_parameters, elbow_config = "down")
-    calculate_ik(Pee_x=Pee_x, Pee_y=Pee_y, Pee_z=Pee_z,DH_parameters=DH_parameters, elbow_config = "up")
+    configs = [
+        ('up', 'up'),
+        ('up', 'down'),
+        ('down', 'up'),
+        ('down', 'down')
+    ]
+
+    for theta1_cfg, theta3_cfg in configs:
+        calculate_ik(Pee_x=Pee_x, Pee_y=Pee_y, Pee_z=Pee_z,DH_parameters=DH_parameters, theta_2_config=theta1_cfg, theta_3_config=theta3_cfg)
+
 
     
